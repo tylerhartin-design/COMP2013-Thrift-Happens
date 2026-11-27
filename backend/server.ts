@@ -84,3 +84,32 @@ server.post("/data", async (request, response) => {
     response.status(500).send(error);
   }
 });
+
+//DELETE route to delete one clothes article by id
+server.delete("/data/:id", async (request, response) => {
+  const id = Number(request.params.id); //Because param will convert to string, we need to convert it back to number to match the type in the DB
+  try {
+    await ClothesItem.findOneAndDelete({ id });
+    response
+      .status(201)
+      .send({ message: `Item with id ${id} deleted successfully` });
+  } catch (error) {
+    console.log(error);
+    response.status(500).send(error);
+  }
+});
+
+//PATCH route to update one clothes article by id
+server.patch("/data/:id", async (request, response) => {
+  const id = Number(request.params.id);
+  const clothesArticle = request.body;
+  try {
+    await ClothesItem.findOneAndUpdate({ id }, { ...clothesArticle });
+    response
+      .status(201)
+      .send({ message: `Item with id ${id} updated successfully` });
+  } catch (error) {
+    console.log(error);
+    response.status(500).send(error);
+  }
+});

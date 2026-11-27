@@ -26,6 +26,8 @@ export interface ItemsContainerProps {
     userQuantity: number,
     price: number,
   ) => void;
+  handleDeleteItem: (id: number) => void;
+  handleEditItem: (id: number) => void;
 }
 
 export interface ItemsQuantity {
@@ -251,7 +253,52 @@ export default function ThriftHappensApp() {
       } catch (error) {
         console.log(error);
       }
+    } else {
+      try {
+        await axios
+          .patch(
+            `http://localhost:3000/data/${clothesArticle.id}`,
+            clothesArticle,
+          )
+          .then((response) => setResponseMessage(response.data.message))
+          .then(() => getProductsFromDB());
+      } catch (error) {
+        console.log(error);
+      }
     }
+  }
+  async function handleDeleteItem(id: number) {
+    try {
+      await axios
+        .delete(`http://localhost:3000/data/${id}`)
+        .then((response) => setResponseMessage(response.data.message))
+        .then(() => getProductsFromDB());
+      setClothesArticle({
+        id: -1,
+        name: "",
+        image: "",
+        fit: "" as ClothingProduct["fit"],
+        category: "hoodie",
+        size: "M",
+        color: "",
+        description: "",
+        price: 0,
+        quantity: 0,
+        itemQuantity: 0,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  function handleEditItem(id: number) {
+    const itemToEdit: ClothingProduct = products.find(
+      (item) => item.id === id,
+    ) || { ...clothesArticle };
+    if (!itemToEdit) {
+      throw new Error(`Product with if ${id} cannot be found`);
+    }
+    setClothesArticle({ ...itemToEdit });
   }
 
   return (
@@ -263,6 +310,8 @@ export default function ThriftHappensApp() {
           itemsQuantity={itemsQuantity}
           handleAdjustQuantityCounter={handleAdjustQuantityCounter}
           handleAddToCheckout={handleAddToCheckout}
+          handleDeleteItem={handleDeleteItem}
+          handleEditItem={handleEditItem}
         />
         <CheckoutContainer
           checkoutItems={checkoutItems}
