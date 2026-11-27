@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 const clothesItemSchema = new mongoose.Schema({
-  id: { type: String, required: true },
+  id: { type: Number, required: true },
   name: { type: String, required: true },
   image: { type: String, required: true },
   fit: { type: String, enum: ["men", "women", "kids"], required: true },
@@ -14,7 +14,7 @@ const clothesItemSchema = new mongoose.Schema({
   description: { type: String, required: true },
   size: {
     type: String,
-    enum: ["xs", "s", "m", "l", "xl", "xxl"],
+    enum: ["XS", "S", "M", "L", "XL", "XXL"],
     required: true,
   },
   price: { type: Number, required: true },

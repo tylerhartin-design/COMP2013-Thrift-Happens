@@ -41,7 +41,46 @@ server.get("/data", async (request, response) => {
     const data = await ClothesItem.find();
     response.status(200).send(data);
   } catch (error) {
-    console.error(error);
+    console.log(error);
+    response.status(500).send(error);
+  }
+});
+
+//POST Route to add new clothes item to the DB
+server.post("/data", async (request, response) => {
+  const {
+    id,
+    name,
+    image,
+    fit,
+    category,
+    color,
+    description,
+    size,
+    price,
+    quantity,
+    itemQuantity,
+  } = request.body;
+  const newArticle = new ClothesItem({
+    id,
+    name,
+    image,
+    fit,
+    category,
+    color,
+    description,
+    size,
+    price,
+    quantity,
+    itemQuantity,
+  });
+  try {
+    await newArticle.save();
+    response.status(201).send({
+      message: `New Item with id ${id} added successfully`,
+    });
+  } catch (error) {
+    console.log(error);
     response.status(500).send(error);
   }
 });
